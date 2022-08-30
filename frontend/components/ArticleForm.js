@@ -12,6 +12,7 @@ export default function ArticleForm(props) {
     // Every time the `currentArticle` prop changes, we should check it for truthiness:
     // if it's truthy, we should set its title, text and topic into the corresponding
     // values of the form. If it's not, we should reset the form back to initial values.
+    props.currentArticleID? setValues(props.currentArticleID) : null
   })
 
   const onChange = evt => {
@@ -24,11 +25,13 @@ export default function ArticleForm(props) {
     // ✨ implement
     // We must submit a new post or update an existing one,
     // depending on the truthyness of the `currentArticle` prop.
+    props.postArticle(values)
   }
 
   const isDisabled = () => {
     // ✨ implement
     // Make sure the inputs have some values
+    !(values.tite === null && values.text === null && values.topic === null)? false : true
   }
 
   return (
