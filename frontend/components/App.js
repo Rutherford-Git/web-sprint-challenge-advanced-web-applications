@@ -50,10 +50,12 @@ export default function App() {
       localStorage.setItem('token', token)
       redirectToArticles()
       setMessage(res.data.message)
-      setSpinnerOn(false)
     })
     .catch(err => {
       debugger
+    })
+    .finally(() => {
+      setSpinnerOn(false)
     })
 }
 
@@ -74,11 +76,13 @@ export default function App() {
     .then(res => {
       setArticles(res.data.articles)
       console.log(res.data)
-      setSpinnerOn(false)
       setMessage(res.data.message)
     })
     .catch(err => {
       debugger
+    })
+    .finally(() => {
+      setSpinnerOn(false)
     })
   }
 
@@ -95,11 +99,13 @@ export default function App() {
       const { article } = res.data
       console.log(article)
       setArticles(articles.concat(article))
-      setSpinnerOn(false)
       setMessage(res.data.message)
     })
     .catch(err => {
       debugger
+    })
+    .finally(() => {
+      setSpinnerOn(false)
     })
 }
 
