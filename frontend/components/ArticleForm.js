@@ -6,14 +6,28 @@ const initialFormValues = { title: '', text: '', topic: '' }
 export default function ArticleForm(props) {
   const [values, setValues] = useState(initialFormValues)
   // ✨ where are my props? Destructure them here
+  const {currentArticle, postArticle, updateArticle} = props
 
+  /* {updateArticle(art.article_id, { 
+    "title": art.title, 
+    "text": art.text, 
+    "topic": art.topic 
+    })}} */
+
+    /* {...values,
+      title: currentArticleID.title, text: currentArticleID.text, topic: currentArticleID.topic} */
   useEffect(() => {
     // ✨ implement
     // Every time the `currentArticle` prop changes, we should check it for truthiness:
     // if it's truthy, we should set its title, text and topic into the corresponding
     // values of the form. If it's not, we should reset the form back to initial values.
-    props.currentArticleID? setValues(props.currentArticleID) : null
-  })
+    if (currentArticle) {
+      setValues(currentArticle)
+    } else {
+      setValues(initialFormValues)
+    }
+  }, [currentArticle])
+  
 
   const onChange = evt => {
     const { id, value } = evt.target
@@ -25,19 +39,27 @@ export default function ArticleForm(props) {
     // ✨ implement
     // We must submit a new post or update an existing one,
     // depending on the truthyness of the `currentArticle` prop.
-    props.postArticle(values)
+    currentArticle?
+    updateArticle(values.article_id,{
+    "title": values.title, 
+    "text": values.text, 
+    "topic": values.topic 
+    }):
+    postArticle(values);
+    setValues(initialFormValues)
+    
   }
 
   const isDisabled = () => {
     // ✨ implement
     // Make sure the inputs have some values
-    !(values.tite === null && values.text === null && values.topic === null)? false : true
+    return !(values.title.trim().length && values.text.trim().length && values.topic.trim().length)? true : false
   }
 
   return (
     // ✨ fix the JSX: make the heading display either "Edit" or "Create"
     // and replace Function.prototype with the correct function
-    <form id="form" onSubmit={onSubmit}>
+    <form id="form" onSubmit={isDisabled()}>
       <h2>Create Article</h2>
       <input
         maxLength={50}
@@ -60,9 +82,14 @@ export default function ArticleForm(props) {
         <option value="Node">Node</option>
       </select>
       <div className="button-group">
-        <button disabled={isDisabled()} id="submitArticle">Submit</button>
-        <button onClick={Function.prototype}>Cancel edit</button>
+        <button 
+        disabled={isDisabled()} 
+        onClick={onSubmit}
+        id="submitArticle"
+        >Submit</button>
+        <button onClick={()=>setValues(initialFormValues)} >Cancel edit</button>
       </div>
+      
     </form>
   )
 }

@@ -10,6 +10,7 @@ import axiosWithAuth from '../axios'
 
 const articlesUrl = 'http://localhost:9000/api/articles'
 const loginUrl = 'http://localhost:9000/api/login'
+const putURL = 'http://localhost:9000/api/articles/:article_id'
 
 export default function App() {
   // ✨ MVP can be achieved with these states
@@ -95,19 +96,49 @@ export default function App() {
       console.log(article)
       setArticles(articles.concat(article))
       setSpinnerOn(false)
+      setMessage(res.data.message)
     })
     .catch(err => {
       debugger
     })
 }
 
-  const updateArticle = ({ article_id, article }) => {
+  const updateArticle = ( article_id, article ) => {
     // ✨ implement
     // You got this!
+    setSpinnerOn(true)
+    axiosWithAuth().put(`${articlesUrl}/${article_id}`, article)
+      .then(res => {
+        const updatedArticle = res.data.article
+        setArticles(articles.map(
+          art => (art.article_id === article_id) ? updatedArticle : art
+        ))
+        setCurrentArticleId(null)
+        setMessage(res.data.message)
+      })
+      .catch(err => {
+        debugger
+      })
+      .finally(() => {
+        setSpinnerOn(false)
+      })
   }
 
   const deleteArticle = article_id => {
     // ✨ implement
+    setSpinnerOn(true)
+    axiosWithAuth().delete(`${articlesUrl}/${article_id}`)
+      .then(res => { // eslint-disable-line
+        setArticles(articles.filter(art => (art.article_id != article_id)))
+        setMessage(res.data.message)
+      })
+      .catch(err => {
+        console.log(err)
+        debugger
+      })
+      .finally(() => {
+        setSpinnerOn(false)
+      })
   }
 
   return (
@@ -126,8 +157,8 @@ export default function App() {
           <Route path="/" element={<LoginForm login={login}/>} />
           <Route path="articles" element={
             <>
-              <ArticleForm currentArticleId={currentArticleId} postArticle={postArticle}/>
-              <Articles articles={articles} getArticles={getArticles}/>
+              <ArticleForm currentArticle={articles.find(art => (art.article_id === currentArticleId))} updateArticle={updateArticle} postArticle={postArticle}/>
+              <Articles articles={articles} getArticles={getArticles} setCurrentArticleId={setCurrentArticleId} deleteArticle={deleteArticle}/>
             </>
           } />
         </Routes>

@@ -17,7 +17,6 @@ export default function LoginForm(props) {
 
   const onSubmit = evt => {
     evt.preventDefault()
-    // ✨ implement
     props.login(values)
   }
 
@@ -26,7 +25,9 @@ export default function LoginForm(props) {
     // Trimmed username must be >= 3, and
     // trimmed password must be >= 8 for
     // the button to become enabled
-    !(values.username >= 3 && values.password >= 8)? true : false
+   return !(values.username.trim().length >= 3 && values.password.trim().length >= 8)?
+    true :
+    false
   }
 
   return (
